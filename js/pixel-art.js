@@ -1,4 +1,4 @@
-var nombreColores = ['White', 'LightYellow',
+let nombreColores = ['White', 'LightYellow',
   'LemonChiffon', 'LightGoldenrodYellow', 'PapayaWhip', 'Moccasin', 'PeachPuff', 'PaleGoldenrod', 'Bisque', 'NavajoWhite', 'Wheat', 'BurlyWood', 'Tan',
   'Khaki', 'Yellow', 'Gold', 'Orange', 'DarkOrange', 'OrangeRed', 'Tomato', 'Coral', 'DarkSalmon', 'LightSalmon', 'LightCoral', 'Salmon', 'PaleVioletRed',
   'Pink', 'LightPink', 'HotPink', 'DeepPink', 'MediumVioletRed', 'Crimson', 'Red', 'FireBrick', 'DarkRed', 'Maroon',
@@ -20,9 +20,25 @@ var nombreColores = ['White', 'LightYellow',
   'DimGray', 'LightSlateGray', 'DarkSlateGray', 'Black'
 ];
 
-// Variable para guardar el elemento 'color-personalizado'
+// letiable para guardar el elemento 'color-personalizado'
 // Es decir, el que se elige con la rueda de color.
-var colorPersonalizado = document.getElementById('color-personalizado');
+
+
+
+//tamano Grilla
+const pixelPanelSize = 1750;
+// Elemento Paleta del HTML
+let valorPaletaColores;
+// Elemento Grilla del HTML
+let grillaPixels;
+//Color elegido del panel de colores
+let colorSeleccionado;
+//Tomar Elemento paleta
+let indicadorDeColor = document.getElementById('indicador-de-color');
+//Tomer Elemento Indicador Personalizado
+let colorPersonalizado = document.getElementById('color-personalizado');
+
+
 
 colorPersonalizado.addEventListener('change',
   (function () {
@@ -34,23 +50,7 @@ colorPersonalizado.addEventListener('change',
 );
 
 
-
-
-//tamano Grilla
-const pixelPanelSize = 1750;
-// Elemento Paleta del HTML
-var valorPaletaColores;
-// Elemento Grilla del HTML
-var grillaPixels;
-//Color elegido del panel de colores
-var colorSeleccionado;
-
-
-
-
-var indicadorDeColor = document.getElementById('indicador-de-color');
-
-
+//Crea Paleta Colores
 function paletaColores() {
   for (i = 0; i < nombreColores.length; i++) {
     let crearDiv = document.createElement("div");
@@ -70,26 +70,27 @@ function paletaColores() {
       })
     );
 
-
-    // $(valorPaletaColores).append("<div></div>").children().addClass("color-paleta").css('backgroundColor', 'color');
   }
 };
 
 
+//Crea Grilla de Pixels
 function crearGrilla() {
   for (i = 0; i < pixelPanelSize; i++) {
     let newDiv = document.createElement('div');
     grillaPixels.appendChild(newDiv);
     newDiv.style.backgroundColor = 'white';
-
-
   };
+
 
   grillaPixels.addEventListener("mousemove",
     function (e) {
       if (e.buttons == 1) {
 
         e.target.style.backgroundColor = colorSeleccionado;
+
+      } else if (e.buttons == 2) {
+        e.target.style.backgroundColor = colorActual;
       }
 
     });
@@ -97,48 +98,101 @@ function crearGrilla() {
   grillaPixels.addEventListener("click",
     function (e) {
       e.target.style.backgroundColor = colorSeleccionado;
-
     });
 
+  grillaPixels.oncontextmenu = function (e) {
+    e.target.style.backgroundColor = colorActual;
+    return false;
+  }
+
+};
 
 
-  // $(grillaPixels).append("<div><img class= 'pixel' src ='./img/empty.gif' /></div>");
+// Abre una ventana para guardar nuestro arte en un archivo pixel-art.png
 
+let botonGuardar = document.getElementById("guardar");
+
+botonGuardar.addEventListener("click", function(e){
+  guardarPixelArt();
+});
+
+
+
+function guardarPixelArt() {
+  html2canvas($("#grilla-pixeles") , {
+    onrendered: function(canvas) {
+      theCanvas = canvas;
+      canvas.toBlob(function(blob) {
+        saveAs(blob, "pixel-art.png");
+      });
+    }
+  });
 }
 
 
 
-//funcion para boton borrar todo
 
-var botonBorrar = document.getElementById("borrar");
+//funcion para boton Borrar todo
+let botonBorrar = document.getElementById("borrar");
 
 botonBorrar.addEventListener("click", function (e) {
-  var $listaNodosGrilla = $("#grilla-pixeles").children();
+  let $listaNodosGrilla = $("#grilla-pixeles").children();
 
   for (i = 0; i < $listaNodosGrilla.length; i++) {
-    var temporal = $listaNodosGrilla[i];
+    let temporal = $listaNodosGrilla[i];
     $(temporal).animate({ backgroundColor: "white" }, 1000);
-  
+
   }
 
 });
 
-var batman = document.getElementById("batman");
 
 
-// Carga a un superheroe predefinido
+
+
+
+// Carga a un superheroe predefinido en pantalla clikeando sobre su imagen
 function cargarSuperheroe(superheroe) {
-  var $pixeles = $("#grilla-pixeles div");
-  for (var i = 0; i < superheroe.length; i++) {
+  let $pixeles = $("#grilla-pixeles div");
+  for (let i = 0; i < superheroe.length; i++) {
     $pixeles[i].style.backgroundColor = superheroe[i];
   }
 }
 
 
+let idBatman = document.getElementById('batman');
+
+idBatman.addEventListener('click', function(e){
+ cargarSuperheroe(batman);
+});
+
+
+
+let idFlash = document.getElementById('flash');
+
+idFlash.addEventListener('click', function(e){
+ cargarSuperheroe(flash);
+});
+
+
+
+let idWonder = document.getElementById('wonder');
+
+idWonder.addEventListener('click', function(e){
+ cargarSuperheroe(wonder);
+});
+
+
+let idInvisible = document.getElementById('invisible');
+
+idInvisible.addEventListener('click', function(e){
+ cargarSuperheroe(invisible);
+});
 
 
 
 
+//Document Ready
 
 $(document).ready(function () {
 
